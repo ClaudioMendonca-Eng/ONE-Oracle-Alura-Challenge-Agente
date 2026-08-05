@@ -23,7 +23,10 @@ env/
 # Editor
 .vscode/*
 !.vscode/extensions.json
+CLAUDE.md
 
 # SO
 .DS_Store
 Thumbs.db
+.agents/skills/developing-with-streamlit
+.claude/skills/developing-with-streamlit
