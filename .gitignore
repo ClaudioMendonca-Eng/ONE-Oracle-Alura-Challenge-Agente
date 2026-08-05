@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+
+# Variáveis de ambiente / chaves locais
+.env
+.env.*
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Índices vetoriais salvos localmente (o projeto usa índice em memória, ver docs/estudo_de_caso.md)
+*.faiss
+*.pkl
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+
+# SO
+.DS_Store
+Thumbs.db

@@ -184,11 +184,11 @@ Decisão: vou usar um **`.devcontainer`** (padrão Dev Containers do VS Code) pa
 
 - Facilita reproduzir o ambiente igual em qualquer máquina, sem depender de versão de Python instalada localmente.
 - Vai conter a imagem base (Python) e as dependências do projeto (LangChain, Streamlit, biblioteca de leitura de PDF/CSV, etc.), conforme as tecnologias já decididas neste documento e no [challenge_alura_agente.md](challenge_alura_agente.md).
-- Ainda não criei os arquivos — fica registrado aqui como decisão para quando eu começar a implementação.
+- **Criado:** `.devcontainer/devcontainer.json` (imagem `python:3.11`, porta 8501 do Streamlit encaminhada, extensões de Python no VS Code) + `requirements.txt` na raiz do repositório com as dependências (Streamlit, LangChain, pypdf, pandas, FAISS em memória, integrações de LLM). Também adicionei um `.gitignore` básico para não versionar `__pycache__`, ambiente virtual e arquivos `.env`.
 
 ## Próximos passos
 
-- [ ] Criar o `.devcontainer` (devcontainer.json + dependências do projeto).
+- [x] Criar o `.devcontainer` (devcontainer.json + dependências do projeto).
 - [ ] Escolher a tecnologia de leitura/indexação (Python + LangChain + RAG, conforme sugestão do curso).
 - [ ] Implementar o carregamento automático dos 5 PDFs pré-carregados + o `st.file_uploader` opcional (ver "Arquitetura de dados" acima).
 - [ ] Implementar o ícone de engrenagem com modal de configuração da API key (ver "Interface do agente" acima).

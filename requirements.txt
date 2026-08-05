@@ -1,0 +1,20 @@
+# Interface / deploy
+streamlit>=1.36
+
+# Orquestração do agente e RAG
+langchain>=0.2
+langchain-community>=0.2
+
+# Leitura dos documentos (PDF/CSV)
+pypdf>=4.2
+pandas>=2.2
+
+# Índice vetorial em memória (ver docs/estudo_de_caso.md > Arquitetura de dados)
+faiss-cpu>=1.8
+
+# Integração com LLMs (a chave é fornecida pelo usuário via modal, não fica no código)
+langchain-openai>=0.1
+langchain-google-genai>=1.0
+
+# Utilitário para variáveis de ambiente em desenvolvimento local
+python-dotenv>=1.0
