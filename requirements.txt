@@ -15,6 +15,7 @@ faiss-cpu>=1.8
 # Integração com LLMs (a chave é fornecida pelo usuário via modal, não fica no código)
 langchain-openai>=0.1
 langchain-google-genai>=1.0
+langchain-cohere>=0.6
 
 # Utilitário para variáveis de ambiente em desenvolvimento local
 python-dotenv>=1.0

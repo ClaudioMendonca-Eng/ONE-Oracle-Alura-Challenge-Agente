@@ -5,14 +5,7 @@ import re
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
-from src.config import (
-    GREETING_MESSAGE,
-    REFUSAL_MESSAGE,
-    SIMILARITY_THRESHOLD,
-    SUGGESTION_BANK,
-    SYSTEM_PROMPT,
-    TOP_K,
-)
+from src.config import GREETING_MESSAGE, REFUSAL_MESSAGE, SUGGESTION_BANK, SYSTEM_PROMPT, TOP_K
 
 # Quantas trocas recentes do histórico exibido na tela entram no prompt, só para dar
 # continuidade a perguntas de acompanhamento (ex.: "e para o Brasil?"). Não é memória
@@ -41,16 +34,22 @@ def _history_to_messages(history: list[dict]) -> list:
     ]
 
 
-def answer_question(vectorstore, chat_model, question: str, history: list[dict]) -> dict:
+def answer_question(
+    vectorstore, chat_model, question: str, history: list[dict], similarity_threshold: float
+) -> dict:
     """Resolve o guardrail de similaridade e, se aprovado, devolve um generator que
     transmite a resposta do LLM em pedaços (para uso com st.write_stream), em vez de
-    bloquear até a resposta inteira chegar."""
+    bloquear até a resposta inteira chegar.
+
+    similarity_threshold vem de PROVIDERS[provedor]["similarity_threshold"]: cada modelo
+    de embedding tem uma faixa de score de cosseno diferente para o mesmo par
+    pergunta/documento, então o limiar não pode ser uma constante global única."""
     if _is_greeting(question):
         return {"answer": GREETING_MESSAGE, "sources": [], "refused": False, "stream": None}
 
     results = vectorstore.similarity_search_with_relevance_scores(question, k=TOP_K)
 
-    if not results or results[0][1] < SIMILARITY_THRESHOLD:
+    if not results or results[0][1] < similarity_threshold:
         return {"answer": REFUSAL_MESSAGE, "sources": [], "refused": True, "stream": None}
 
     context = "\n\n".join(

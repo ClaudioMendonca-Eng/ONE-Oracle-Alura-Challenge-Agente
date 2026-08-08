@@ -27,6 +27,47 @@ def _load_preloaded_chunks():
     return load_preloaded_documents()
 
 
+# Padrões observados nos erros reais de cada provedor (testado com chaves inválidas):
+# Gemini -> "API_KEY_INVALID" / "API key not valid"; OpenAI e Cohere -> "Incorrect API
+# key provided" / 401. Mensagens técnicas viram uma explicação em português para quem
+# não é da área; o texto original fica disponível num expander para quem quiser depurar.
+_INVALID_KEY_MARKERS = (
+    "api_key_invalid",
+    "api key not valid",
+    "incorrect api key",
+    "invalid_api_key",
+    "invalid api key",
+    "unauthorized",
+    "401",
+)
+_QUOTA_MARKERS = ("quota", "rate limit", "resource_exhausted", "429")
+_NETWORK_MARKERS = ("timeout", "connection", "network", "unreachable")
+
+
+def _friendly_error_message(exc: Exception) -> str:
+    text = str(exc).lower()
+    if any(marker in text for marker in _INVALID_KEY_MARKERS):
+        return (
+            "A chave de API informada não foi aceita pelo provedor. Confira se você "
+            "copiou a chave completa (sem espaços em branco) e se ela pertence ao "
+            "provedor selecionado, depois tente salvar novamente."
+        )
+    if any(marker in text for marker in _QUOTA_MARKERS):
+        return (
+            "O limite de uso da sua chave de API foi atingido. Aguarde alguns minutos "
+            "ou verifique o plano/cota da sua conta no site do provedor."
+        )
+    if any(marker in text for marker in _NETWORK_MARKERS):
+        return (
+            "Não foi possível conectar ao serviço do provedor. Verifique sua conexão "
+            "com a internet e tente novamente."
+        )
+    return (
+        "Não foi possível configurar o agente com a chave informada. Verifique a "
+        "chave de API e tente novamente."
+    )
+
+
 defaults = {
     "provider": next(iter(PROVIDERS)),
     "api_key": os.getenv("OPENAI_API_KEY") or os.getenv("GOOGLE_API_KEY") or "",
@@ -119,12 +160,37 @@ def settings_dialog():
         disabled=st.session_state.kb_ready,
         help="Depois que a base de conhecimento é criada, o provedor fica travado nesta sessão.",
     )
-    api_key = st.text_input(
+    if st.session_state.kb_ready:
+        if st.button(
+            "Desconectar para trocar de provedor",
+            icon=":material/link_off:",
+            width="stretch",
+            disabled=answering,
+        ):
+            st.session_state.kb_ready = False
+            st.session_state.vectorstore = None
+            st.session_state.embeddings = None
+            st.session_state.chat_model = None
+            st.session_state.api_key = ""
+            st.session_state.uploaded_docs = {}
+            st.rerun()
+
+    key_col, help_col = st.columns([6, 1], vertical_alignment="bottom")
+    api_key = key_col.text_input(
         "Chave de API",
         value=st.session_state.api_key,
         type="password",
         help=PROVIDERS[provider]["api_key_help"],
     )
+    with help_col.popover(":material/help:", help="Como conseguir sua chave de API"):
+        st.markdown(f"**Como conseguir sua chave da {provider}**")
+        st.write(PROVIDERS[provider]["api_key_steps"])
+        st.link_button(
+            f"Abrir página da {provider}",
+            PROVIDERS[provider]["api_key_url"],
+            icon=":material/open_in_new:",
+            width="stretch",
+        )
 
     st.divider()
     st.caption("Documentos adicionais desta sessão (opcional)")
@@ -171,7 +237,9 @@ def settings_dialog():
                     ids = add_documents(st.session_state.vectorstore, chunks)
                     st.session_state.uploaded_docs[uploaded_file.name] = ids
         except Exception as exc:  # chave inválida, erro de rede, etc.
-            st.error(f"Não foi possível configurar o agente: {exc}")
+            st.error(_friendly_error_message(exc), icon=":material/error:")
+            with st.expander("Detalhes técnicos"):
+                st.code(str(exc))
             return
         st.rerun()
 
@@ -249,6 +317,7 @@ if st.session_state.pending_question:
                 st.session_state.chat_model,
                 st.session_state.pending_question,
                 messages[:-1],
+                PROVIDERS[st.session_state.provider]["similarity_threshold"],
             )
         if result["stream"] is None:
             st.write(result["answer"])
