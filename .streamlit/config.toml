@@ -1,0 +1,33 @@
+[theme]
+base = "dark"
+
+# Cores extraídas diretamente do logo da BimBam Buy (docs/imagens/logobimbam.png).
+# primaryColor é o laranja da marca escurecido (#fa5000 -> #d44400) só o suficiente
+# para o texto branco dos botões manter contraste WCAG AA (4.5:1); orangeColor guarda
+# o tom original, vivo, para usos sem essa exigência (badges, textos coloridos).
+primaryColor = "#d44400"
+backgroundColor = "#0b1830"
+secondaryBackgroundColor = "#132646"
+textColor = "#eef1f7"
+borderColor = "#22345c"
+
+orangeColor = "#fa5a00"
+orangeBackgroundColor = "#3a1400"
+orangeTextColor = "#ffb27a"
+blueColor = "#3a5a9c"
+
+showWidgetBorder = true
+showSidebarBorder = true
+baseRadius = "8px"
+buttonRadius = "8px"
+
+# Fundo branco para o card branco do logo se integrar, em vez de flutuar como um
+# retângulo destacado sobre o navy escuro. linkColor não é configurável por sidebar,
+# então o footer (com um link de e-mail) herda o linkColor global — por isso ele usa a
+# mesma cor do primaryColor (#d44400), a única que passa em WCAG AA nos dois fundos.
+[theme.sidebar]
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f3f4f8"
+textColor = "#0b1830"
+borderColor = "#d7dbe8"
+primaryColor = "#d44400"

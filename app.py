@@ -20,6 +20,16 @@ load_dotenv()
 
 st.set_page_config(page_title="Assistente BimBam Buy",
                    page_icon="🛍️", layout="centered")
+st.logo("docs/imagens/logobimbam.png", size="large")
+
+st.html(
+    "<style>"
+    '[data-testid="stSidebarLogo"] {'
+    "max-height: 100px !important; height: 100px !important; width: auto !important;"
+    "display: block !important; margin-left: auto !important; margin-right: auto !important;"
+    "}"
+    "</style>"
+)
 
 
 @st.cache_data(show_spinner=False)
@@ -86,7 +96,8 @@ for key, value in defaults.items():
 
 def _new_conversation() -> str:
     conversation_id = str(uuid.uuid4())
-    st.session_state.conversations[conversation_id] = {"title": "Nova conversa", "messages": []}
+    st.session_state.conversations[conversation_id] = {
+        "title": "Nova conversa", "messages": []}
     st.session_state.active_conversation_id = conversation_id
     return conversation_id
 
@@ -113,11 +124,17 @@ with st.sidebar:
     for conversation_id in reversed(list(st.session_state.conversations)):
         conversation = st.session_state.conversations[conversation_id]
         is_active = conversation_id == st.session_state.active_conversation_id
-        switch_col, delete_col = st.columns([5, 1], vertical_alignment="center")
+        switch_col, delete_col = st.columns(
+            [5, 1], vertical_alignment="center")
+        # A conversa ativa usa "secondary" (caixa sutil) só para indicar "você está
+        # aqui"; as demais usam "tertiary" (sem caixa) para parecer uma lista de
+        # histórico, não uma pilha de botões de ação — "primary" (vermelho, mesmo peso
+        # visual do botão "Nova conversa") deixava a conversa vazia atual parecendo um
+        # segundo botão de ação duplicado.
         if switch_col.button(
             conversation["title"],
             key=f"switch_{conversation_id}",
-            type="primary" if is_active else "secondary",
+            type="secondary" if is_active else "tertiary",
             width="stretch",
             disabled=answering,
         ):
@@ -127,6 +144,7 @@ with st.sidebar:
             ":material/delete:",
             key=f"delete_{conversation_id}",
             help="Excluir conversa",
+            type="tertiary",
             width="content",
             disabled=answering,
         ):
@@ -245,7 +263,13 @@ def settings_dialog():
 
 
 with st.container(horizontal=True, horizontal_alignment="distribute", vertical_alignment="center"):
-    st.title("🛍️ Assistente BimBam Buy")
+    with st.container(horizontal=True, vertical_alignment="center"):
+        st.image(
+            "docs/imagens/logo_alura_one.png",
+            width=200,
+            link="https://github.com/ClaudioMendonca-Eng/ONE-Oracle-Alura-Challenge-Agente",
+        )
+        st.title("🛍️ Assistente BimBam Buy")
     if st.button(":material/settings:", help="Configurações", width="content"):
         settings_dialog()
 
@@ -265,7 +289,8 @@ for turn in messages:
     with st.chat_message(turn["role"], avatar=avatar):
         st.write(turn["content"])
         if turn.get("sources"):
-            st.caption(":material/description: Fontes: " + ", ".join(turn["sources"]))
+            st.caption(":material/description: Fontes: " +
+                       ", ".join(turn["sources"]))
 
 if not messages:
     suggestion_caption = "Experimente perguntar:"
@@ -305,7 +330,8 @@ if question and not answering:
     messages.append({"role": "user", "content": question})
     conversation = st.session_state.conversations[st.session_state.active_conversation_id]
     if conversation["title"] == "Nova conversa" and len(messages) == 1:
-        conversation["title"] = question if len(question) <= 42 else question[:39] + "..."
+        conversation["title"] = question if len(
+            question) <= 42 else question[:39] + "..."
     st.session_state.pending_question = question
     st.rerun()
 
@@ -330,7 +356,8 @@ if st.session_state.pending_question:
                 answer = st.write_stream(result["stream"])
             sources = result["sources"]
             if sources:
-                st.caption(":material/description: Fontes: " + ", ".join(sources))
+                st.caption(":material/description: Fontes: " +
+                           ", ".join(sources))
         except Exception as exc:
             answer = _friendly_error_message(exc)
             sources = []
@@ -338,7 +365,8 @@ if st.session_state.pending_question:
             with st.expander("Detalhes técnicos"):
                 st.code(str(exc))
 
-    messages.append({"role": "assistant", "content": answer, "sources": sources})
+    messages.append(
+        {"role": "assistant", "content": answer, "sources": sources})
     st.session_state.pending_question = None
     # Sem isso, o chip de sugestão clicado nesta rodada continuaria "selecionado" na
     # tela até a próxima interação, porque o bloco de sugestões acima já foi desenhado
