@@ -311,23 +311,34 @@ if question and not answering:
 
 if st.session_state.pending_question:
     with st.chat_message("assistant", avatar=":material/storefront:"):
-        with st.spinner("Consultando a base de conhecimento..."):
-            result = answer_question(
-                st.session_state.vectorstore,
-                st.session_state.chat_model,
-                st.session_state.pending_question,
-                messages[:-1],
-                PROVIDERS[st.session_state.provider]["similarity_threshold"],
-            )
-        if result["stream"] is None:
-            st.write(result["answer"])
-            answer = result["answer"]
-        else:
-            answer = st.write_stream(result["stream"])
-        if result["sources"]:
-            st.caption(":material/description: Fontes: " + ", ".join(result["sources"]))
+        # Sem o try/except, uma falha aqui (rede, limite de taxa, erro do provedor) deixa
+        # pending_question travado para sempre — em toda rerun seguinte "answering" fica
+        # True, o que desabilita permanentemente as sugestões e o campo de pergunta.
+        try:
+            with st.spinner("Consultando a base de conhecimento..."):
+                result = answer_question(
+                    st.session_state.vectorstore,
+                    st.session_state.chat_model,
+                    st.session_state.pending_question,
+                    messages[:-1],
+                    PROVIDERS[st.session_state.provider]["similarity_threshold"],
+                )
+            if result["stream"] is None:
+                st.write(result["answer"])
+                answer = result["answer"]
+            else:
+                answer = st.write_stream(result["stream"])
+            sources = result["sources"]
+            if sources:
+                st.caption(":material/description: Fontes: " + ", ".join(sources))
+        except Exception as exc:
+            answer = _friendly_error_message(exc)
+            sources = []
+            st.error(answer, icon=":material/error:")
+            with st.expander("Detalhes técnicos"):
+                st.code(str(exc))
 
-    messages.append({"role": "assistant", "content": answer, "sources": result["sources"]})
+    messages.append({"role": "assistant", "content": answer, "sources": sources})
     st.session_state.pending_question = None
     # Sem isso, o chip de sugestão clicado nesta rodada continuaria "selecionado" na
     # tela até a próxima interação, porque o bloco de sugestões acima já foi desenhado
