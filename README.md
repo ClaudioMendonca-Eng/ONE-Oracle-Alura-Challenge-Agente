@@ -162,9 +162,47 @@ capital da França?") e tentativas de jailbreak, estão em
       similaridade calibrado individualmente por provedor
 - [x] Validação das respostas reais do agente com uma chave de API (tabela acima usa
       transcrições reais, não respostas de referência)
-- [ ] Deploy na nuvem implementado no **Streamlit Cloud**
-- [ ] Evidência do deploy (link ou captura de tela)
+- [x] Deploy na nuvem implementado no **Streamlit Cloud**
+- [x] Evidência do deploy (link ou captura de tela)
 
-### Evidência de implantação
+## Conclusão
 
-_Pendente — será adicionada aqui após o deploy._
+Encarei este desafio como uma oportunidade de sair do "RAG de tutorial" e construir algo
+que eu confiaria em produção. Por isso boa parte do meu tempo não foi gasta plugando
+LangChain com FAISS — isso é a parte fácil —, e sim pensando em guardrails: o que
+acontece quando alguém pergunta algo fora do escopo, tenta um jailbreak, ou quando o
+provedor de LLM simplesmente falha. Decidi que o limiar de similaridade, calibrado
+individualmente por provedor em vez de um número mágico universal, seria a minha primeira
+linha de defesa — e isso só ficou claro depois de rodar dezenas de perguntas reais contra
+a Cohere e comparar os scores com os da OpenAI e do Gemini.
+
+Também aprendi, na prática, o custo de dar suporte a três provedores de LLM/embeddings ao
+mesmo tempo: cada um tem sua própria escala de similaridade, seus próprios erros e sua
+própria forma de fazer streaming, e isolar tudo isso em `llm_providers.py` e `config.py`
+foi o que me permitiu não duplicar lógica no restante do app. Também tive que resistir à
+tentação de "resolver tudo com o prompt": o system prompt existe, mas ele é a segunda
+camada, não a primeira — a recusa antes de chamar o LLM é o que realmente impede
+alucinação em perguntas fora do domínio da BimBam Buy.
+
+No fim, entrego um assistente que faz uma coisa bem definida — responder sobre as
+políticas da BimBam Buy, com fontes, e se recusar educadamente quando a pergunta sai
+desse escopo — e que roda em produção no Streamlit Cloud sem precisar de banco de dados.
+Fico satisfeito com o resultado, mas sei que a lista de próximos passos não acaba aqui: um
+conjunto de testes automatizados e uma bateria formal de red-teaming continuam no meu
+radar, mesmo além do prazo deste challenge.
+
+## Certificação
+
+<p align="center">
+  <img src="./docs/imagens/badge-rag-agente-ia.png" alt="Badge — Agente de IA com RAG" height="220"><br>
+  <sub>Badge de conclusão do módulo <strong>Agente de IA com RAG</strong></sub>
+</p>
+
+<p align="center">
+  <img src="./docs/imagens/certificado_conclusao.png" alt="Certificado de conclusão" width="800"><br>
+  <sub>Certificado de conclusão do <strong>Oracle Next Education (ONE)</strong></sub>
+</p>
+
+---
+
+Copyright © 2025 <a href="https://www.claudiomendonca.eng.br" target="_blank">ClaudioMendonca.eng.br</a>. 
