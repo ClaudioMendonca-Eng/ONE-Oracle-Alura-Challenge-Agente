@@ -107,28 +107,28 @@ Supermercado moderno de operação contínua (24/7) que integra a experiência d
 
 ### Repositório no GitHub
 
-- [ ] Repositório público no GitHub com o código-fonte do projeto.
-- [ ] Histórico de commits que reflita o desenvolvimento do projeto.
-- [ ] Estrutura organizada e fácil de compreender.
+- [x] Repositório público no GitHub com o código-fonte do projeto.
+- [x] Histórico de commits que reflita o desenvolvimento do projeto.
+- [x] Estrutura organizada e fácil de compreender.
 
 ### Documentação (README)
 
-- [ ] Descrição geral do projeto.
-- [ ] Arquitetura da solução implementada.
-- [ ] Tecnologias e ferramentas utilizadas.
-- [ ] Instruções para executar o projeto.
-- [ ] Exemplos de perguntas que o agente consegue responder.
-- [ ] Exemplos de respostas geradas pelo agente.
+- [x] Descrição geral do projeto.
+- [x] Arquitetura da solução implementada.
+- [x] Tecnologias e ferramentas utilizadas.
+- [x] Instruções para executar o projeto.
+- [x] Exemplos de perguntas que o agente consegue responder.
+- [x] Exemplos de respostas geradas pelo agente.
 
 ### Agente inteligente funcional
 
-- [ ] Agente de IA capaz de responder a perguntas baseadas no conteúdo de um documento (PDF ou CSV).
-- [ ] Código para ler e processar o documento utilizado como fonte de informação.
+- [x] Agente de IA capaz de responder a perguntas baseadas no conteúdo de um documento (PDF ou CSV).
+- [x] Código para ler e processar o documento utilizado como fonte de informação.
 
 ### Evidência do deploy
 
-- [ ] Link público da aplicação em funcionamento **ou**
-- [ ] Vídeo ou captura de tela (print) que mostre a aplicação sendo executada corretamente na nuvem (OCI ou outra plataforma escolhida).
+- [x] Link público da aplicação em funcionamento **ou**
+- [x] Vídeo ou captura de tela (print) que mostre a aplicação sendo executada corretamente na nuvem (OCI ou outra plataforma escolhida).
 
 A evidência (link, vídeo ou print) deve ficar registrada no README — no início ou no fim, tanto faz. Como o deploy não precisa ficar no ar para sempre, essa evidência é o que garante a comprovação mesmo depois de eu desligar o serviço.
 
