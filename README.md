@@ -22,9 +22,13 @@ documentos (ex.: um defeito de fabricação passa primeiro pela garantia, só va
 devolução se a garantia não cobrir). O agente existe para responder essas perguntas
 diretamente, sem que ninguém precise abrir um PDF.
 
+---
+
 <p align="center">
-    <img src="./docs/imagens/bimbambuy.gif" alt="BimBam Buy" width="1100">
+    <a href="https://one-oracle-alura-challenge-agente-claudiomendonca.streamlit.app/" target="_blank"><img style="margin: 10px" height="500" width="800" src="./docs/imagens/bimbambuy.gif" alt="BimBam Buy tela do sistema"/></a>
 </p>
+
+---
 
 ## Arquitetura
 
