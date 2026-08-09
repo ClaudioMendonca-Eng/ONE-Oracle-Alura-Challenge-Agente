@@ -211,7 +211,20 @@ def settings_dialog():
         )
 
     st.divider()
-    st.caption("Documentos adicionais desta sessão (opcional)")
+    docs_label_col, docs_help_col = st.columns([6, 1], vertical_alignment="center")
+    docs_label_col.caption("Documentos adicionais desta sessão (opcional)")
+    with docs_help_col.popover(":material/help:", help="Para que serve isso?"):
+        st.markdown("**Para que serve isso?**")
+        st.write(
+            "Aqui você pode anexar arquivos extras (PDF ou CSV) para esta conversa — "
+            "por exemplo, uma tabela de pedidos ou um regulamento específico do seu caso.\n\n"
+            "O assistente vai consultar esses arquivos, além das políticas oficiais da "
+            "BimBam Buy, para responder suas perguntas.\n\n"
+            "É totalmente opcional: se você não anexar nada, o assistente continua "
+            "respondendo normalmente usando só as políticas da empresa.\n\n"
+            "Esses arquivos ficam apenas na memória desta sessão — eles não são salvos "
+            "em nenhum servidor e desaparecem quando você recarrega ou fecha o app."
+        )
     uploaded_files = st.file_uploader(
         "Anexar PDF ou CSV", type=["pdf", "csv"], accept_multiple_files=True
     )

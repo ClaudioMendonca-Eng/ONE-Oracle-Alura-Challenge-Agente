@@ -22,6 +22,10 @@ documentos (ex.: um defeito de fabricação passa primeiro pela garantia, só va
 devolução se a garantia não cobrir). O agente existe para responder essas perguntas
 diretamente, sem que ninguém precise abrir um PDF.
 
+<p align="center">
+    <img src="./docs/imagens/bimbambuy.gif" alt="BimBam Buy" width="1100">
+</p>
+
 ## Arquitetura
 
 ```mermaid
